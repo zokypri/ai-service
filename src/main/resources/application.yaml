@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: ai-service
+
+server:
+  servlet:
+    context-path: /ai-service
+  port: 8089
+
+client:
+  anthropic:
+    api:
+      key: ${ANTHROPIC_API_KEY}
+      version: 2023-06-01
+    model: claude-sonnet-4-5-20250929
+
+
