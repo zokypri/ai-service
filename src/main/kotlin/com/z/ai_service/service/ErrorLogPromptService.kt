@@ -3,6 +3,7 @@ package com.z.ai_service.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.z.ai_service.ClaudeRequest
 import com.z.ai_service.ErrorAnalysis
+import com.z.ai_service.Role
 import com.z.ai_service.client.ClaudeClient
 import org.springframework.stereotype.Service
 
@@ -13,7 +14,7 @@ class ErrorLogPromptService(
 ) {
   private val conversationHistory = mutableListOf(
     ClaudeRequest.Message(
-      role = "user",
+      role = Role.USER.value,
       content = """
     You are a JSON-only API. You must respond ONLY with raw JSON nothing else.
     
@@ -43,21 +44,20 @@ class ErrorLogPromptService(
     
     Bad response: ```json{"rootCause":"..."}```
     Good response: {"rootCause":"..."}
-  """.trimIndent()
+  """.trimIndent().replace("\n", " ").replace(Regex("\\s+"), " ").trim()
     )
   )
 
   fun promptErrorLog(userMessage: String): ErrorAnalysis {
-    conversationHistory.add(ClaudeRequest.Message(role = "user", content = userMessage))
+    conversationHistory.add(ClaudeRequest.Message(role = Role.USER.value, content = userMessage))
 
     val response = claudeClient.sendMessage(conversationHistory)
     val assistantMessage = response.getText().trim()
       .removePrefix("```json")
       .removePrefix("```")
       .removeSuffix("```")
-      .trim()
 
-    conversationHistory.add(ClaudeRequest.Message(role = "assistant", content = assistantMessage))
+    conversationHistory.add(ClaudeRequest.Message(role = Role.ASSISTANT.value, content = assistantMessage))
 
     // Parse JSON response into structured object
     return objectMapper.readValue(assistantMessage, ErrorAnalysis::class.java)
@@ -65,5 +65,9 @@ class ErrorLogPromptService(
 
   fun clearConversation() {
     conversationHistory.clear()
+  }
+
+  fun getConversationHistory(): MutableList<ClaudeRequest.Message> {
+    return conversationHistory
   }
 }

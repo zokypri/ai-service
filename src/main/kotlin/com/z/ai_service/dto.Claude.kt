@@ -14,6 +14,11 @@ data class ClaudeRequest(
   )
 }
 
+enum class Role(val value: String) {
+  USER("user"),
+  ASSISTANT("assistant")
+}
+
 data class ClaudeResponse(
   val id: String,
   val type: String,  // Always "message"
@@ -39,8 +44,6 @@ data class ClaudeResponse(
   fun getText(): String = content.firstOrNull()?.text ?: ""
 }
 
-data class ChatRequest(val message: String)
-data class ChatResponse(val response: String)
 
 data class ErrorAnalysis(
   val rootCause: String,
