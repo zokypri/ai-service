@@ -1,0 +1,5 @@
+client:
+  anthropic:
+    api:
+      base-url: http://localhost:${wiremock.server.port}/v1
+      key: 1234

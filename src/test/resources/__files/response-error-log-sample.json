@@ -1,0 +1,6 @@
+{
+  "rootCause": "Failed to obtain JDBC Connection",
+  "missingValue": "Database connection",
+  "allowedValues": null,
+  "suggestion": "Verify database is running and accessible, check connection pool settings, validate database credentials and network connectivity"
+}
