@@ -10,6 +10,7 @@ server:
 client:
   anthropic:
     api:
+      base-url: https://api.anthropic.com/v1
       key: ${ANTHROPIC_API_KEY}
       version: 2023-06-01
     model: claude-sonnet-4-5-20250929
