@@ -1,12 +1,13 @@
 package com.z.ai_service.controller
 
-import com.z.ai_service.ChatResponse
+import com.z.ai_service.ClaudeRequest
 import com.z.ai_service.ErrorAnalysis
 import com.z.ai_service.service.ErrorLogPromptService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -22,6 +23,13 @@ class ErrorLogPromptController(private val errorLogPromptService: ErrorLogPrompt
   fun chat(@RequestBody message: String): ResponseEntity<ErrorAnalysis> {
     val errorAnalysis = errorLogPromptService.promptErrorLog(message)
     return ResponseEntity.ok(errorAnalysis)
+  }
+
+  @GetMapping("/chat")
+  @Operation(summary = "Get the conversation history", description = "Fething all messages in the current conversation")
+  fun getConversation(): ResponseEntity<MutableList<ClaudeRequest.Message>> {
+    val conversation = errorLogPromptService.getConversationHistory()
+    return ResponseEntity.ok(conversation)
   }
 
   @DeleteMapping("/chat")
