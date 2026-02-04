@@ -16,13 +16,13 @@ class GlobalExceptionHandler {
   @ExceptionHandler(RateLimitException::class)
   fun handleRateLimit(e: RateLimitException) =
     ResponseEntity
-      .status(HttpStatus.TOO_MANY_REQUESTS)
+      .status(e.httpStatus)
       .body(ErrorResponse(e.message ?: "Rate limit exceeded"))
 
   @ExceptionHandler(OverloadedException::class)
   fun handleOverloaded(e: OverloadedException) =
     ResponseEntity
-      .status(HttpStatus.SERVICE_UNAVAILABLE)
+      .status(e.httpStatus)
       .body(ErrorResponse(e.message ?: "API overloaded"))
 
   @ExceptionHandler(RestClientException::class)
@@ -39,7 +39,7 @@ class GlobalExceptionHandler {
   @ExceptionHandler(ClaudeApiException::class)
   fun handleClaudeApiException(e: ClaudeApiException) =
     ResponseEntity
-      .status(HttpStatus.BAD_GATEWAY)
+      .status(e.httpStatus)
       .body(ErrorResponse(e.message ?: "Failed to parse Claude API response"))
 
   // Catch-all for anything unexpected

@@ -1,7 +1,18 @@
 package com.z.ai_service.exception
 
-open class ClaudeApiException(message: String) : RuntimeException(message)
+import org.springframework.http.HttpStatus
 
-class RateLimitException(message: String) : ClaudeApiException(message)
+open class ClaudeApiException(
+  message: String,
+  open val httpStatus: HttpStatus = HttpStatus.BAD_GATEWAY
+) : RuntimeException(message)
 
-class OverloadedException(message: String) : ClaudeApiException(message)
+class RateLimitException(
+  message: String,
+  override val httpStatus: HttpStatus = HttpStatus.TOO_MANY_REQUESTS
+) : ClaudeApiException(message, httpStatus)
+
+class OverloadedException(
+  message: String,
+  override val httpStatus: HttpStatus = HttpStatus.SERVICE_UNAVAILABLE
+) : ClaudeApiException(message, httpStatus)
