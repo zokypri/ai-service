@@ -59,7 +59,6 @@ class ErrorLogPromptService(
 
     conversationHistory.add(ClaudeRequest.Message(role = Role.ASSISTANT.value, content = assistantMessage))
 
-    // Parse JSON response into structured object
     return objectMapper.readValue(assistantMessage, ErrorAnalysis::class.java)
   }
 

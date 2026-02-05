@@ -1,6 +1,10 @@
 package com.z.ai_service.component
 
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
+import com.github.tomakehurst.wiremock.client.WireMock.stubFor
+import com.github.tomakehurst.wiremock.client.WireMock.verify
+import com.github.tomakehurst.wiremock.stubbing.Scenario
 import java.nio.file.Files
 import java.nio.file.Paths
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,17 +30,18 @@ class ErrorLogAnalysisTest {
   @Test
   fun `should fetch error log analysis from Claude`() {
 
-    val responseJson = Files.readString(Paths.get("src/test/resources/__files/ClaudeErrorLogAnalysisResponse.json"))
-    WireMock.stubFor(
+    val claudeErrorLogAnalysisResponse = Files.readString(Paths.get("src/test/resources/__files/ClaudeErrorLogAnalysisResponse.json"))
+    stubFor(
       WireMock.post(WireMock.urlEqualTo("/v1/messages"))
         .willReturn(
           WireMock.aResponse()
             .withHeader("Content-Type", "application/json")
-            .withBody(responseJson)
+            .withBody(claudeErrorLogAnalysisResponse)
         )
     )
 
     val requestText = Files.readString(Paths.get("src/test/resources/__files/request-error-log-sample.txt"))
+    val responseJson = Files.readString(Paths.get("src/test/resources/__files/response-error-log-sample.json"))
 
     mockMvc.perform(
       post("/api/error/prompt/chat")
@@ -44,12 +49,12 @@ class ErrorLogAnalysisTest {
         .content(requestText)
     )
       .andExpect(status().isOk)
-      .andExpect(content().json(Files.readString(Paths.get("src/test/resources/__files/response-error-log-sample.json"))))
+      .andExpect(content().json(responseJson))
   }
 
   @Test
   fun `should return error when Claude is overloaded`() {
-    WireMock.stubFor(
+    stubFor(
       WireMock.post(WireMock.urlEqualTo("/v1/messages"))
         .willReturn(
           WireMock.aResponse()
@@ -72,7 +77,7 @@ class ErrorLogAnalysisTest {
 
   @Test
   fun `should return error when Claude rate limit is exceeded`() {
-    WireMock.stubFor(
+    stubFor(
       WireMock.post(WireMock.urlEqualTo("/v1/messages"))
         .willReturn(
           WireMock.aResponse()
@@ -95,7 +100,7 @@ class ErrorLogAnalysisTest {
 
   @Test
   fun `should return error when Claude returns 200 with empty body`() {
-    WireMock.stubFor(
+    stubFor(
       WireMock.post(WireMock.urlEqualTo("/v1/messages"))
         .willReturn(
           WireMock.aResponse()
@@ -114,6 +119,50 @@ class ErrorLogAnalysisTest {
     )
       .andExpect(status().isBadGateway)
       .andExpect(content().json("""{"error":"Empty response from Claude API"}"""))
+  }
+
+  @Test
+  fun `should retry and succeed after Claude is overloaded twice`() {
+    val claudeErrorLogAnalysisResponse = Files.readString(Paths.get("src/test/resources/__files/ClaudeErrorLogAnalysisResponse.json"))
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/v1/messages"))
+        .inScenario("Retry Scenario")
+        .whenScenarioStateIs(Scenario.STARTED)
+        .willReturn(WireMock.aResponse().withStatus(529))
+        .willSetStateTo("SecondAttempt")
+    )
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/v1/messages"))
+        .inScenario("Retry Scenario")
+        .whenScenarioStateIs("SecondAttempt")
+        .willReturn(WireMock.aResponse().withStatus(529))
+        .willSetStateTo("Success")
+    )
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/v1/messages"))
+        .inScenario("Retry Scenario")
+        .whenScenarioStateIs("Success")
+        .willReturn(WireMock.aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(claudeErrorLogAnalysisResponse))
+    )
+
+    val requestText = Files.readString(Paths.get("src/test/resources/__files/request-error-log-sample.txt"))
+    val responseJson = Files.readString(Paths.get("src/test/resources/__files/response-error-log-sample.json"))
+
+
+    mockMvc.perform(
+      post("/api/error/prompt/chat")
+        .contentType("text/plain")
+        .content(requestText)
+    )
+      .andExpect(status().isOk)
+      .andExpect(content().json(responseJson))
+
+    verify(
+      3,
+      postRequestedFor(WireMock.urlEqualTo("/v1/messages"))
+    )
   }
 
 }

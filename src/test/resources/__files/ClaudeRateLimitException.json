@@ -1,3 +1,3 @@
 {
-  "error": "Rate limit exceeded, consider retrying later"
+  "error": "Anthropic rate limit exceeded, consider retrying later"
 }
