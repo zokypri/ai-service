@@ -27,7 +27,7 @@ class ErrorLogPromptController(private val errorLogPromptService: ErrorLogPrompt
 
   @GetMapping("/chat")
   @Operation(summary = "Get the conversation history", description = "Fething all messages in the current conversation")
-  fun getConversation(): ResponseEntity<MutableList<ClaudeRequest.Message>> {
+  fun getConversation(): ResponseEntity<List<ClaudeRequest.Message>> {
     val conversation = errorLogPromptService.getConversationHistory()
     return ResponseEntity.ok(conversation)
   }
