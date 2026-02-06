@@ -1,7 +1,7 @@
 package com.z.ai_service.controller
 
-import com.z.ai_service.ClaudeRequest
-import com.z.ai_service.ErrorAnalysis
+import com.z.ai_service.model.ClaudeRequest
+import com.z.ai_service.model.ErrorAnalysis
 import com.z.ai_service.service.ErrorLogPromptService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

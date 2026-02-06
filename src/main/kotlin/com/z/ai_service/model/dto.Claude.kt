@@ -1,4 +1,4 @@
-package com.z.ai_service
+package com.z.ai_service.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

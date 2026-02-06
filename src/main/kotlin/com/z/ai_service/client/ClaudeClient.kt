@@ -1,7 +1,7 @@
 package com.z.ai_service.client
 
-import com.z.ai_service.ClaudeRequest
-import com.z.ai_service.ClaudeResponse
+import com.z.ai_service.model.ClaudeRequest
+import com.z.ai_service.model.ClaudeResponse
 import com.z.ai_service.exception.ClaudeApiException
 import com.z.ai_service.exception.OverloadedException
 import com.z.ai_service.exception.RateLimitException
