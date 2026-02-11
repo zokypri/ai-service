@@ -1,6 +1,17 @@
 spring:
   application:
     name: ai-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/vectordb
+    username: postgres
+    password: postgres
+  ai:
+    vectorstore:
+      pgvector:
+        initialize-schema: true  # Creates the table automatically
+        index-type: HNSW         # or IVFFlat (HNSW is generally better)
+        distance-type: COSINE_DISTANCE  # or EUCLIDEAN_DISTANCE, NEGATIVE_INNER_PRODUCT
+        dimensions: 1536         # Must match your embedding model's output
 
 server:
   servlet:
