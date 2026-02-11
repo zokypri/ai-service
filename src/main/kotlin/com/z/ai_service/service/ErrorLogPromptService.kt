@@ -30,10 +30,10 @@ class ErrorLogPromptService(
       .removePrefix("```json")
       .removePrefix("```")
       .removeSuffix("```")
-
     conversationHistory.add(ClaudeRequest.Message(role = Role.ASSISTANT.value, content = assistantMessage))
-
-    return objectMapper.readValue(assistantMessage, ErrorAnalysis::class.java)
+    val errorAnalysis = objectMapper.readValue(assistantMessage, ErrorAnalysis::class.java)
+    logger.info("Claude responded with root cause to the error '${errorAnalysis.rootCause}'.")
+    return errorAnalysis
   }
 
   fun clearConversation() {
