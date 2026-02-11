@@ -2,11 +2,13 @@ package com.z.ai_service.component
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
+import com.github.tomakehurst.wiremock.client.WireMock.reset
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.verify
 import com.github.tomakehurst.wiremock.stubbing.Scenario
 import java.nio.file.Files
 import java.nio.file.Paths
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -26,6 +28,11 @@ class ErrorLogAnalysisTest {
 
   @Autowired
   private lateinit var mockMvc: MockMvc
+
+  @BeforeEach
+  fun resetWireMock() {
+    reset()
+  }
 
   @Test
   fun `should fetch error log analysis from Claude`() {
