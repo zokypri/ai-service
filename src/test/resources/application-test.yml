@@ -18,3 +18,7 @@ client:
     api:
       base-url: http://localhost:${wiremock.server.port}/v1
       key: 1234
+  openai:
+    api:
+      base-url: http://localhost:${wiremock.server.port}/v1
+      key: 1234

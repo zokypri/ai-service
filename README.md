@@ -26,3 +26,5 @@ The test case `should fetch error log analysis from Claude`() from the ErrorLogA
 This test verifies the functionality of the error log analysis feature by sending a sample Stacktrace log to the controller and asserting that a valid response is received from the LLM.
 It shows how the stack trace log is sent to the service and how the error log analysis is built from LLM response
 Pay close attention to the files in src/test/resources/__files folder
+
+## Technologies Used

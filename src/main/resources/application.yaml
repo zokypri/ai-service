@@ -1,17 +1,6 @@
 spring:
   application:
     name: ai-service
-  datasource:
-    url: jdbc:postgresql://localhost:5432/vectordb
-    username: postgres
-    password: postgres
-  ai:
-    vectorstore:
-      pgvector:
-        initialize-schema: true  # Creates the table automatically
-        index-type: HNSW         # or IVFFlat (HNSW is generally better)
-        distance-type: COSINE_DISTANCE  # or EUCLIDEAN_DISTANCE, NEGATIVE_INNER_PRODUCT
-        dimensions: 1536         # Must match your embedding model's output
 
 server:
   servlet:
@@ -25,5 +14,12 @@ client:
       key: ${ANTHROPIC_API_KEY}
       version: 2023-06-01
     model: claude-sonnet-4-5-20250929
-
-
+  openai:
+    api:
+      base-url: https://api.openai.com/v1
+      key: ${OPENAI_API_KEY}
+    model: gpt-5.2
+    embedding:
+      model: text-embedding-3-small
+  chroma:
+    base-url: http://localhost:8000
