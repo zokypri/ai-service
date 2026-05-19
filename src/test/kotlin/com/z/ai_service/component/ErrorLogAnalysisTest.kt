@@ -35,6 +35,30 @@ class ErrorLogAnalysisTest {
   }
 
   @Test
+  fun `should fetch signing service error log analysis from Claude`() {
+    val claudeSigningErrorLogAnalysisResponse = Files.readString(Paths.get("src/test/resources/__files/ClaudeSigningErrorLogAnalysisResponse.json"))
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/v1/messages"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(claudeSigningErrorLogAnalysisResponse)
+        )
+    )
+
+    val requestText = Files.readString(Paths.get("src/test/resources/__files/request-signing-error-log-sample.txt"))
+    val responseJson = Files.readString(Paths.get("src/test/resources/__files/response-signing-error-log-sample.json"))
+
+    mockMvc.perform(
+      post("/api/error/prompt/chat")
+        .contentType("text/plain")
+        .content(requestText)
+    )
+      .andExpect(status().isOk)
+      .andExpect(content().json(responseJson))
+  }
+
+  @Test
   fun `should fetch error log analysis from Claude`() {
 
     val claudeErrorLogAnalysisResponse = Files.readString(Paths.get("src/test/resources/__files/ClaudeErrorLogAnalysisResponse.json"))

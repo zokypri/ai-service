@@ -1,0 +1,17 @@
+{
+  "sid": "rt_scheduler__admin__search__RMD5b5f3a4a2a1b4c3d_at_1716105600_1",
+  "search_name": "ERROR log alert - OrderService",
+  "app": "search",
+  "owner": "admin",
+  "results_link": "https://splunk-instance:8000/app/search/search?sid=rt_scheduler_...",
+  "result": {
+    "sourcetype": "log4j",
+    "source": "/var/log/orderservice/app.log",
+    "host": "orderservice-prod-01",
+    "index": "main",
+    "_time": "1716105612.000",
+    "log_level": "ERROR",
+    "_raw": "2026-05-19 07:15:12 ERROR [OrderService] java.lang.NullPointerException: Cannot invoke \"com.example.orderservice.entity.Customer.getAccountId()\" because the return value of \"com.example.orderservice.repository.CustomerRepository.findByEmail(String)\" is null\n\tat com.example.orderservice.service.OrderService.createOrder(OrderService.java:87)\n\tat com.example.orderservice.controller.OrderController.placeOrder(OrderController.java:54)"
+  }
+}
+

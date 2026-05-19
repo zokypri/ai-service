@@ -5,6 +5,8 @@ import com.z.ai_service.exception.OverloadedException
 import com.z.ai_service.exception.RateLimitException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.web.HttpMediaTypeNotSupportedException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.client.RestClientException
@@ -48,6 +50,18 @@ class GlobalExceptionHandler {
     ResponseEntity
       .status(HttpStatus.INTERNAL_SERVER_ERROR)
       .body(ErrorResponse(e.message ?: "Something went wrong"))
+
+  @ExceptionHandler(HttpMessageNotReadableException::class)
+  fun handleHttpMessageNotReadable(e: HttpMessageNotReadableException) =
+    ResponseEntity
+      .status(HttpStatus.BAD_REQUEST)
+      .body(ErrorResponse(e.message ?: "Malformed or missing request body"))
+
+  @ExceptionHandler(HttpMediaTypeNotSupportedException::class)
+  fun handleHttpMediaTypeNotSupported(e: HttpMediaTypeNotSupportedException) =
+    ResponseEntity
+      .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+      .body(ErrorResponse(e.message ?: "Unsupported media type"))
 }
 
 data class ErrorResponse(val error: String)

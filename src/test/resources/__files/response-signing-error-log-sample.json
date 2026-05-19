@@ -1,0 +1,6 @@
+{
+  "rootCause": "com.fasterxml.jackson.databind.exc.InvalidFormatException: Cannot deserialize value of type SigningProcessHintCode from String PROCESSING: not one of the values accepted for Enum class",
+  "missingValue": "PROCESSING",
+  "allowedValues": ["CANCELLED", "EXPIRED_TRANSACTION", "OUTSTANDING_TRANSACTION", "START_FAILED", "CERTIFICATE_ERR", "USER_CANCEL", "USER_SIGN", "NO_CLIENT", "UNKNOWN", "STARTED", "USER_MRTD"],
+  "suggestion": "Add PROCESSING to the SigningProcessHintCode enum in se.sbab.signing.service.model.response.v3, or annotate the enum with @JsonEnumDefaultValue to handle unknown values gracefully"
+}
